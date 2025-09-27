@@ -1,0 +1,260 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Smart Little Me • A/L ICT – Chapter 1 Quiz (50 MCQs)</title>
+  <style>
+    :root { --bg:#0b0c10; --card:#151820; --text:#e6e7eb; --muted:#a9afc3; --accent:#6ee7b7; --accent2:#5b9cff; --good:#2fbf71; --bad:#ff5b6e; }
+    *{box-sizing:border-box}
+    body{margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Noto Sans',sans-serif; background:var(--bg); color:var(--text);}
+    header{position:sticky; top:0; z-index:5; background:linear-gradient(180deg,rgba(110,231,183,.15),rgba(11,12,16,.9)); backdrop-filter: blur(6px); border-bottom:1px solid #232633}
+    .container{max-width:1100px; margin:0 auto; padding:24px}
+    .brand{display:flex; align-items:center; gap:12px; font-weight:800; letter-spacing:.3px; text-transform:uppercase; color:#a9ffd9}
+    .brand .dot{width:12px; height:12px; border-radius:50%; background:var(--accent);}
+    h1{margin:6px 0 4px; font-size:clamp(22px,3vw,28px)}
+    .sub{color:var(--muted); margin:0 0 10px; font-size:14px}
+    .actions{display:flex; gap:10px; flex-wrap:wrap; margin:8px 0 16px}
+    button{cursor:pointer; border:1px solid #2a2f3b; background:#1a1f2a; color:var(--text); padding:10px 14px; border-radius:10px; font-weight:600; transition:all .2s}
+    button:hover{border-color:#3b4252; transform:translateY(-1px)}
+    .primary{background:var(--accent2); border-color:transparent; color:#0b1220}
+    .primary:hover{filter:brightness(1.05)}
+    .ghost{background:transparent}
+    .score{font-weight:700; padding:10px 14px; border-radius:10px; background:#12151e; border:1px solid #232633}
+    .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(340px,1fr)); gap:16px; margin-bottom:24px}
+    .card{background:var(--card); border:1px solid #232633; border-radius:16px; padding:16px; box-shadow:0 6px 16px rgba(0,0,0,.25)}
+    .qid{font-size:12px; color:var(--muted); letter-spacing:.3px; display:flex; justify-content:space-between; gap:8px; align-items:center}
+    .qtxt{margin:6px 0 10px; font-weight:600; line-height:1.35}
+    .meta{font-size:12px; color:var(--muted); display:flex; gap:10px}
+    .opts{margin-top:8px; display:grid; gap:8px}
+    .opt{display:flex; gap:8px; align-items:flex-start; padding:8px; border:1px solid #2a2f3b; border-radius:12px; transition:border-color .2s, background .2s}
+    .opt input{margin-top:3px}
+    .opt.good{border-color:rgba(47,191,113,.6); background:rgba(47,191,113,.07)}
+    .opt.bad{border-color:rgba(255,91,110,.6); background:rgba(255,91,110,.07)}
+    .explain{margin-top:8px; font-size:12px; color:var(--muted); display:none}
+    .explain.show{display:block}
+    .mini-actions{display:flex; gap:8px; margin-top:10px; flex-wrap:wrap}
+    footer{padding:24px; text-align:center; color:var(--muted)}
+    .legend{display:flex; gap:8px; align-items:center; font-size:12px; color:var(--muted)}
+    .pill{display:inline-block; border-radius:999px; padding:3px 8px; border:1px solid #2a2f3b; background:#12151e; color:var(--muted)}
+    .correct-pill{background:rgba(47,191,113,.1); color:#8de0b5; border-color:rgba(47,191,113,.5)}
+    .incorrect-pill{background:rgba(255,91,110,.1); color:#ff9dae; border-color:rgba(255,91,110,.5)}
+    /* Printable summary */
+    #summary{display:none; background:#111521; border:1px solid #232633; border-radius:14px; padding:16px; margin-bottom:16px}
+    #summary h2{margin:0 0 8px}
+    #summary pre{white-space:pre-wrap; color:var(--muted); background:#0f1420; border:1px solid #232633; padding:10px; border-radius:8px}
+    @media print {
+      header .actions, #showAnsBtn { display:none !important; }
+      .grid { grid-template-columns:1fr; gap:10px }
+      body { background:#fff; color:#000 }
+      .card { border:1px solid #ccc; background:#fff }
+      .pill, .score { border:1px solid #ccc; background:#f7f7f7; color:#000 }
+      #summary { display:block; background:#fff; border:1px solid #ccc }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <div class="brand"><span class="dot"></span> Smart Little Me</div>
+      <h1>A/L ICT – Chapter 1 Quiz (50 MCQs)</h1>
+      <p class="sub">Tamil + English mix • Auto-grading • Per-question check • Printable summary</p>
+      <div class="actions">
+        <button class="primary" id="gradeBtn">Grade All</button>
+        <button class="ghost" id="showAnsBtn">Toggle All Explanations</button>
+        <button class="ghost" id="printBtn">Print Results</button>
+        <button class="ghost" id="resetBtn">Reset</button>
+        <div class="score" id="scoreBox">Score: – / 50</div>
+        <span class="legend">
+          <span class="pill correct-pill">Correct ✓</span>
+          <span class="pill incorrect-pill">Incorrect ✗</span>
+        </span>
+      </div>
+      <div id="summary">
+        <h2>Result Summary</h2>
+        <div id="summaryContent"></div>
+      </div>
+    </div>
+  </header>
+  <main class="container">
+    <section id="quiz" class="grid"></section>
+  </main>
+  <footer>
+    © Smart Little Me • A/L ICT – Chapter 1 • Generated for offline use.
+  </footer>
+  <script>
+    const data = [{"id": 1, "lesson": "Lesson 1", "topic": "Data vs Information", "question": "Data என்பதன் சரியான வரையறை எது?", "options": ["செயலாக்கப்பட்ட தகவல்", "அசல் உண்மைகள்", "பயனுள்ள விளக்கம்", "அனலிசிஸ் முடிவு"], "answer": "B", "year": "2020-2024"}, {"id": 2, "lesson": "Lesson 1", "topic": "Info Characteristics", "question": "Which is NOT a characteristic of good information?", "options": ["Accuracy", "Relevance", "Timeliness", "Randomness"], "answer": "D", "year": "2020-2024"}, {"id": 3, "lesson": "Lesson 1", "topic": "Data→Info", "question": "“Raw marks of students” → “Class average”. Here, Information is:", "options": ["Raw marks", "Average", "Roll numbers", "Names"], "answer": "B", "year": "2020-2024"}, {"id": 4, "lesson": "Lesson 1", "topic": "Completeness", "question": "Information should be complete means…", "options": ["No processing", "All required facts present", "Only numeric", "Latest only"], "answer": "B", "year": "2021"}, {"id": 5, "lesson": "Lesson 1", "topic": "Process Flow", "question": "Data → Processing → ___ ?", "options": ["Output", "Input", "Validation", "Storage"], "answer": "A", "year": "2022"}, {"id": 6, "lesson": "Lesson 2", "topic": "Data Life Cycle", "question": "First step in Data Life Cycle?", "options": ["Storage", "Collection", "Output", "Archiving"], "answer": "B", "year": "2020"}, {"id": 7, "lesson": "Lesson 2", "topic": "Data Life Cycle", "question": "Correct order?", "options": ["Processing→Collection→Distribution", "Collection→Processing→Distribution", "Storage→Output→Collection", "Distribution→Storage→Processing"], "answer": "B", "year": "2021"}, {"id": 8, "lesson": "Lesson 2", "topic": "Distribution", "question": "Distribution stage focuses on…", "options": ["Validating types", "Delivering results to users", "Cleaning duplicates", "Backups"], "answer": "B", "year": "2022"}, {"id": 9, "lesson": "Lesson 2", "topic": "Storage", "question": "Storing results for future use is called…", "options": ["Archiving/Storage", "Validation", "Encoding", "Retrieval"], "answer": "A", "year": "2023"}, {"id": 10, "lesson": "Lesson 2", "topic": "Processing", "question": "Which action belongs to Processing?", "options": ["Keying marks", "Calculating average", "Printing report", "Filing scripts"], "answer": "B", "year": "2024"}, {"id": 11, "lesson": "Lesson 3", "topic": "Components", "question": "கீழ்கண்டதில் ICT system component அல்லாதது?", "options": ["Hardware", "Software", "People", "Internet"], "answer": "D", "year": "2020"}, {"id": 12, "lesson": "Lesson 3", "topic": "System Software", "question": "Which is System Software?", "options": ["Photoshop", "Windows", "Excel", "VS Code"], "answer": "B", "year": "2021"}, {"id": 13, "lesson": "Lesson 3", "topic": "Application Software", "question": "Which is Application Software?", "options": ["Device driver", "Compiler", "MS Word", "BIOS"], "answer": "C", "year": "2022"}, {"id": 14, "lesson": "Lesson 3", "topic": "Procedures", "question": "Procedures in an ICT system refer to…", "options": ["Users", "Written rules/workflows", "Cables", "Monitors"], "answer": "B", "year": "2023"}, {"id": 15, "lesson": "Lesson 3", "topic": "People", "question": "People component includes…", "options": ["End-users & operators", "ICs", "Protocols", "HDDs"], "answer": "A", "year": "2024"}, {"id": 16, "lesson": "Lesson 4", "topic": "Input Devices", "question": "OCR is used to read…", "options": ["Printed text characters", "Magnetic ink", "Bar patterns", "Sound"], "answer": "A", "year": "2020"}, {"id": 17, "lesson": "Lesson 4", "topic": "Input Devices", "question": "MICR is commonly used in…", "options": ["Libraries", "Supermarkets", "Banks (cheques)", "Hospitals"], "answer": "C", "year": "2021"}, {"id": 18, "lesson": "Lesson 4", "topic": "Input Devices", "question": "Barcode reader belongs to…", "options": ["Input", "Output", "Storage", "Processing"], "answer": "A", "year": "2022"}, {"id": 19, "lesson": "Lesson 4", "topic": "Validation", "question": "Type check validates…", "options": ["Missing fields", "Data type (e.g., number/text)", "Range", "Duplicates"], "answer": "B", "year": "2023"}, {"id": 20, "lesson": "Lesson 4", "topic": "Validation", "question": "Range check example:", "options": ["0 ≤ marks ≤ 100", "Not empty", "Only digits used", "Unique ID"], "answer": "A", "year": "2024"}, {"id": 21, "lesson": "Lesson 4", "topic": "Validation", "question": "Presence check ensures…", "options": ["Field is not blank", "Within limit", "Correct type", "No duplicates"], "answer": "A", "year": "2021"}, {"id": 22, "lesson": "Lesson 4", "topic": "Output", "question": "Which is an example of Output?", "options": ["Keying in data", "Displaying report on screen", "Sorting array", "Validating IDs"], "answer": "B", "year": "2020"}, {"id": 23, "lesson": "Lesson 4", "topic": "Processing Mode", "question": "Batch processing best fits…", "options": ["Live fund transfers", "End-day payroll", "Real-time chat", "Video calls"], "answer": "B", "year": "2022"}, {"id": 24, "lesson": "Lesson 4", "topic": "Processing Mode", "question": "Real-time processing example:", "options": ["End-month billing", "ATM cash withdrawal", "Year-end reports", "Backups"], "answer": "B", "year": "2023"}, {"id": 25, "lesson": "Lesson 4", "topic": "Storage", "question": "Cloud storage is typically…", "options": ["Local HDD only", "Remote/online", "Optical disc", "USB only"], "answer": "B", "year": "2024"}, {"id": 26, "lesson": "Lesson 5", "topic": "Domains", "question": "Smart Classroom is an example of…", "options": ["Governance", "Education", "Agriculture", "Mining"], "answer": "B", "year": "2020"}, {"id": 27, "lesson": "Lesson 5", "topic": "Domains", "question": "e-Government example:", "options": ["Online tax filing", "MRI scan", "POS billing", "Game design"], "answer": "A", "year": "2021"}, {"id": 28, "lesson": "Lesson 5", "topic": "Domains", "question": "Health sector ICT usage:", "options": ["CT/MRI reporting systems", "POS terminal", "Wheat price DB", "CAD drawing"], "answer": "A", "year": "2022"}, {"id": 29, "lesson": "Lesson 5", "topic": "Domains", "question": "Mobile banking belongs to…", "options": ["Business/Finance", "Education", "Agriculture", "Sports"], "answer": "A", "year": "2023"}, {"id": 30, "lesson": "Lesson 5", "topic": "Domains", "question": "Agriculture + ICT example:", "options": ["VR gaming", "Weather & soil sensor dashboards", "Social media", "CAD"], "answer": "B", "year": "2024"}, {"id": 31, "lesson": "Lesson 6", "topic": "Impacts", "question": "One positive social impact of ICT:", "options": ["Cyberbullying", "Knowledge sharing", "Piracy", "Phishing"], "answer": "B", "year": "2020"}, {"id": 32, "lesson": "Lesson 6", "topic": "Impacts", "question": "One positive economic impact:", "options": ["E-commerce growth", "E-waste", "Plagiarism", "Identity theft"], "answer": "A", "year": "2021"}, {"id": 33, "lesson": "Lesson 6", "topic": "Ethics", "question": "Which is an ethical issue?", "options": ["Cloud backup", "Copyright violation (Piracy)", "OCR usage", "Wi‑Fi"], "answer": "B", "year": "2022"}, {"id": 34, "lesson": "Lesson 6", "topic": "Ethics", "question": "Plagiarism means…", "options": ["Using others’ work without credit", "Paid software", "Freeware", "Backup"], "answer": "A", "year": "2023"}, {"id": 35, "lesson": "Lesson 6", "topic": "Environment", "question": "E-waste refers to…", "options": ["Software bugs", "Discarded electronic hardware", "Power surge", "Spam"], "answer": "B", "year": "2024"}, {"id": 36, "lesson": "Lesson 6", "topic": "Privacy", "question": "Privacy risk example:", "options": ["Strong passwords", "Oversharing personal data online", "Two-factor auth", "Encryption"], "answer": "B", "year": "2021"}, {"id": 37, "lesson": "Lesson 6", "topic": "Security", "question": "Cybercrime example:", "options": ["Legitimate download", "Phishing for credentials", "Open-source use", "Patch updates"], "answer": "B", "year": "2022"}, {"id": 38, "lesson": "Lesson 6", "topic": "Licensing", "question": "Licensed vs Open-source: correct:", "options": ["Licensed = always free", "Open-source = modifiable under license", "Both closed", "Neither needs license"], "answer": "B", "year": "2023"}, {"id": 39, "lesson": "Lesson 6", "topic": "Mitigation", "question": "Which practice reduces negative impacts?", "options": ["Ignoring updates", "E-waste recycling & safe disposal", "Weak passwords", "Piracy"], "answer": "B", "year": "2024"}, {"id": 40, "lesson": "Lesson 6", "topic": "SDGs", "question": "ICT & SDGs: ICT helps…", "options": ["Zero improvement", "Quality education & e-governance", "Only entertainment", "More piracy"], "answer": "B", "year": "2020"}, {"id": 41, "lesson": "Lesson 1", "topic": "Info Quality", "question": "Timeliness in information means…", "options": ["Delivered when needed", "Always numeric", "Encrypted", "Archived"], "answer": "A", "year": "2021"}, {"id": 42, "lesson": "Lesson 1", "topic": "Info Quality", "question": "Relevance refers to…", "options": ["Matches user’s need/context", "Has images", "Uses color", "Uses formulas"], "answer": "A", "year": "2022"}, {"id": 43, "lesson": "Lesson 2", "topic": "Data Life Cycle", "question": "After Processing, which step often occurs?", "options": ["Collection", "Distribution", "Validation", "Power-off"], "answer": "B", "year": "2023"}, {"id": 44, "lesson": "Lesson 3", "topic": "Software Types", "question": "Utility software example:", "options": ["Antivirus", "Compiler", "Spreadsheet", "Firmware"], "answer": "A", "year": "2024"}, {"id": 45, "lesson": "Lesson 3", "topic": "People Roles", "question": "A system analyst belongs to…", "options": ["Hardware", "People", "Procedures", "Storage"], "answer": "B", "year": "2020"}, {"id": 46, "lesson": "Lesson 4", "topic": "Input Devices", "question": "Sensors are typically used to capture…", "options": ["Analog/physical measurements", "Only text", "Only images", "Only audio"], "answer": "A", "year": "2021"}, {"id": 47, "lesson": "Lesson 4", "topic": "Output Devices", "question": "Which is an output device?", "options": ["Printer", "Keyboard", "Mouse", "Scanner"], "answer": "A", "year": "2022"}, {"id": 48, "lesson": "Lesson 4", "topic": "Validation", "question": "Format check validates…", "options": ["Pattern/structure (e.g., date DD/MM/YYYY)", "Range", "Presence", "Type"], "answer": "A", "year": "2023"}, {"id": 49, "lesson": "Lesson 5", "topic": "Domains", "question": "In education, LMS stands for…", "options": ["Local Management System", "Learning Management System", "Logical Memory Storage", "Lesson Mapping Suite"], "answer": "B", "year": "2024"}, {"id": 50, "lesson": "Lesson 6", "topic": "Security", "question": "Strong password practice includes…", "options": ["Short common words", "Mix of letters, numbers, symbols", "Same password everywhere", "Sharing with friends"], "answer": "B", "year": "2022"}];
+    const quizEl = document.getElementById('quiz');
+    const scoreBox = document.getElementById('scoreBox');
+    const gradeBtn = document.getElementById('gradeBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const showAnsBtn = document.getElementById('showAnsBtn');
+    const printBtn = document.getElementById('printBtn');
+    let explanationsVisible = false;
+
+    function render(){
+      quizEl.innerHTML = '';
+      for(const q of data){
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.dataset.qid = q.id;
+        card.dataset.answer = q.answer;
+
+        const qid = document.createElement('div');
+        qid.className = 'qid';
+        qid.innerHTML = `<span>Q${q.id.toString().padStart(2,'0')} • ${q.lesson} • ${q.topic} • ${q.year}</span>`;
+        card.appendChild(qid);
+
+        const qtxt = document.createElement('div');
+        qtxt.className = 'qtxt';
+        qtxt.textContent = q.question;
+        card.appendChild(qtxt);
+
+        const opts = document.createElement('div');
+        opts.className = 'opts';
+        const letters = ['A','B','C','D'];
+        q.options.forEach((opt, idx)=>{
+          const label = document.createElement('label');
+          label.className = 'opt';
+          const input = document.createElement('input');
+          input.type = 'radio';
+          input.name = `q_${q.id}`;
+          input.value = letters[idx];
+          const span = document.createElement('div');
+          span.innerHTML = `<strong>${letters[idx]}.</strong> ${opt}`;
+          label.appendChild(input);
+          label.appendChild(span);
+          opts.appendChild(label);
+        });
+        card.appendChild(opts);
+
+        const explain = document.createElement('div');
+        explain.className = 'explain';
+        explain.textContent = `Correct answer: ${q.answer}`;
+        card.appendChild(explain);
+
+        const minis = document.createElement('div');
+        minis.className = 'mini-actions';
+        const checkBtn = document.createElement('button');
+        checkBtn.textContent = 'Check';
+        const clearBtn = document.createElement('button');
+        clearBtn.textContent = 'Clear';
+        checkBtn.addEventListener('click', ()=> gradeCard(card, true));
+        clearBtn.addEventListener('click', ()=> clearCard(card));
+        minis.appendChild(checkBtn);
+        minis.appendChild(clearBtn);
+        card.appendChild(minis);
+
+        quizEl.appendChild(card);
+      }
+      scoreBox.textContent = 'Score: – / ' + data.length;
+    }
+
+    function gradeAll(showExplain=false){
+      let correct = 0, attempted = 0;
+      const cards = quizEl.querySelectorAll('.card');
+      cards.forEach(card=>{
+        const res = gradeCard(card, showExplain);
+        if(res.attempted) attempted++;
+        if(res.correct) correct++;
+      });
+      scoreBox.textContent = `Score: ${correct} / ${data.length} (Attempted: ${attempted})`;
+      window.scrollTo({top:0, behavior:'smooth'});
+      buildSummary();
+    }
+
+    function gradeCard(card, showExplain=false){
+      const ans = card.dataset.answer;
+      const chosen = card.querySelector('input[type="radio"]:checked');
+      const labels = card.querySelectorAll('.opt');
+      labels.forEach(l=>l.classList.remove('good','bad'));
+      let attempted=false, correct=false;
+      if(!chosen){
+        // no selection
+      }else{
+        attempted=true;
+        if(chosen.value === ans){
+          correct=true;
+          chosen.closest('.opt').classList.add('good');
+        }else{
+          chosen.closest('.opt').classList.add('bad');
+          const correctInput = card.querySelector(`input[value="${ans}"]`);
+          if (correctInput) correctInput.closest('.opt').classList.add('good');
+        }
+      }
+      const ex = card.querySelector('.explain');
+      if(showExplain || explanationsVisible) ex.classList.add('show');
+      else ex.classList.remove('show');
+      return {attempted, correct};
+    }
+
+    function clearCard(card){
+      card.querySelectorAll('input[type="radio"]').forEach(i=>i.checked=false);
+      card.querySelectorAll('.opt').forEach(l=>l.classList.remove('good','bad'));
+      const ex = card.querySelector('.explain');
+      ex.classList.remove('show');
+    }
+
+    function resetQuiz(){
+      const cards = quizEl.querySelectorAll('.card');
+      cards.forEach(clearCard);
+      explanationsVisible = false;
+      scoreBox.textContent = 'Score: – / ' + data.length;
+      document.getElementById('summary').style.display = 'none';
+      document.getElementById('summaryContent').innerHTML = '';
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
+
+    function toggleExplanations(){
+      explanationsVisible = !explanationsVisible;
+      const cards = quizEl.querySelectorAll('.card');
+      cards.forEach(card=>{
+        const ex = card.querySelector('.explain');
+        if(explanationsVisible) ex.classList.add('show');
+        else ex.classList.remove('show');
+      });
+    }
+
+    function buildSummary(){
+      const cards = quizEl.querySelectorAll('.card');
+      let correct=0, attempted=0, wrongList=[];
+      cards.forEach(card=>{
+        const ans = card.dataset.answer;
+        const chosen = card.querySelector('input[type="radio"]:checked');
+        if(chosen) attempted++;
+        if(chosen && chosen.value===ans) correct++;
+        else if(chosen && chosen.value!==ans){
+          const qid = card.dataset.qid;
+          wrongList.push(`Q${qid} (Correct: ${ans})`);
+        }
+      });
+      const now = new Date();
+      const text = [
+        `Date/Time: ${now.toLocaleString()}`,
+        `Score: ${correct} / ${data.length}`,
+        `Attempted: ${attempted}`,
+        `Incorrect: ${wrongList.length}`,
+        '',
+        wrongList.length ? 'Incorrect Items:' : 'All correct!',
+        wrongList.join(', ')
+      ].join('\n');
+      document.getElementById('summaryContent').innerHTML = `<pre>${text}</pre>`;
+      document.getElementById('summary').style.display = 'block';
+    }
+
+    function doPrint(){
+      // Ensure summary is built before printing
+      buildSummary();
+      window.print();
+    }
+
+    gradeBtn.addEventListener('click', ()=>gradeAll(true));
+    resetBtn.addEventListener('click', resetQuiz);
+    showAnsBtn.addEventListener('click', toggleExplanations);
+    printBtn.addEventListener('click', doPrint);
+
+    render();
+  </script>
+</body>
+</html>
